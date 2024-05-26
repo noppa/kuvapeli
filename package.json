@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "preserver": "rm -rf dist && npm run build && gzip -k dist/**/*{.js,.css} && knex migrate:up",
+    "server": "tsx server/server.ts",
+    "server:watch": "tsx watch server/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -22,9 +25,6 @@
     "eslint-plugin-solid": "^0.14.0",
     "globals": "^15.3.0",
     "solid-js": "^1.8.17",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.11.0",
-    "typescript": "^5.4.5",
     "typescript-eslint": "^8.0.0-alpha.16",
     "vite": "^5.2.11",
     "vite-plugin-solid": "^2.10.2"
@@ -39,6 +39,9 @@
     "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "knex": "^3.1.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "tsx": "^4.11.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }

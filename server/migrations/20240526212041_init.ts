@@ -16,6 +16,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name')
     table.string('game').references('identifier').inTable('games').notNullable()
     table.string('group').notNullable()
+    table.string('token').notNullable().unique()
     table.timestamps(true, true)
     table.primary(['name', 'game'])
   })
