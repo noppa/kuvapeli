@@ -2,13 +2,20 @@ import * as Solid from "solid-js";
 import getToken from "./getToken";
 
 const App: Solid.Component<{ children?: Solid.JSX.Element }> = (props) => {
-  console.log("app init");
   const token = getToken();
   if (!token) {
     return <div>Tarvitset kutsun pelataksesi.</div>;
   }
 
-  return <div>{props.children}</div>;
+  return (
+    <div>
+      <header>
+        <h1>📷 Kuvapeli</h1>
+      </header>
+      <main>{props.children}</main>
+      <footer></footer>
+    </div>
+  );
 };
 
 export default App;

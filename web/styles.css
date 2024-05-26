@@ -1,0 +1,7 @@
+header h1 {
+	text-align: left;
+}
+
+header, main, footer {
+	margin: 10px;
+}
