@@ -1,7 +1,14 @@
 import express from 'express'
 import getUser from './getUser'
 import getAdminData from './getAdminData'
-import { AdminData, CrudOperation, PlayerData, Word } from '../shared/db-types'
+import {
+  AdminData,
+  CrudOperation,
+  Game,
+  Player,
+  PlayerData,
+  Word,
+} from '../shared/db-types'
 import getPlayerData from './getPlayerData'
 import bodyParser from 'body-parser'
 import getGameAsAdmin from './getGameAsAdmin'
@@ -29,11 +36,42 @@ router.get('/data', async (req, res) => {
   }
 })
 
-router.post('/words', async (req, res) => {
+router.put('/admin/games', async (req, res) => {
+  try {
+    const game = await getGameAsAdmin(req)
+    const crudOperations: CrudOperation<Game>[] = req.body.operations
+    await handleCrudOperations(
+      'games',
+      { uuid: game.uuid },
+      crudOperations.filter((change) => change.op !== 'C'),
+    )
+    await handleCrudOperations(
+      'games',
+      {},
+      crudOperations.filter((change) => change.op === 'C'),
+    )
+    res.status(200)
+  } catch (err) {
+    res.status(500).send(String(err))
+  }
+})
+
+router.post('/admin/words', async (req, res) => {
   try {
     const game = await getGameAsAdmin(req)
     const crudOperations: CrudOperation<Word>[] = req.body.operations
-    await handleCrudOperations('words', game.uuid, crudOperations)
+    await handleCrudOperations('words', { game: game.uuid }, crudOperations)
+    res.status(200)
+  } catch (err) {
+    res.status(500).send(String(err))
+  }
+})
+
+router.post('/admin/players', async (req, res) => {
+  try {
+    const game = await getGameAsAdmin(req)
+    const crudOperations: CrudOperation<Player>[] = req.body.operations
+    await handleCrudOperations('players', { game: game.uuid }, crudOperations)
     res.status(200)
   } catch (err) {
     res.status(500).send(String(err))

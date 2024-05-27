@@ -1,24 +1,27 @@
-import { CrudOperation, Word } from '../shared/db-types'
+import { CrudOperation } from '../shared/db-types'
 import db from './db'
 import { DateLike, Uuid } from '../shared/utils'
 
 export default async function handleCrudOperations<
   T extends {
     uuid: Uuid
-    game: Uuid
     updated_at: DateLike
   },
->(tableName: string, gameUuid: Uuid, operations: CrudOperation<T>[]) {
+>(
+  tableName: string,
+  ownerConstraint: Partial<T>,
+  operations: CrudOperation<T>[],
+) {
   const inserts: T[] = []
   const updates: T[] = []
   const uuidsToDelete: string[] = []
   for (const change of operations) {
     if (change.op === 'C') {
-      inserts.push({ ...change.data, game: gameUuid })
+      inserts.push({ ...change.data, ...ownerConstraint })
     } else if (change.op === 'U') {
       updates.push({
         ...change.data,
-        game: undefined,
+        ...ownerConstraint,
         created_at: undefined,
         updated_at: new Date(),
       })
@@ -38,13 +41,13 @@ export default async function handleCrudOperations<
     for (const update of updates) {
       await trx('words')
         .where('uuid', update.uuid)
-        .where('game' satisfies keyof Word, gameUuid)
+        .where(ownerConstraint)
         .update(update)
     }
     if (uuidsToDelete.length) {
       await trx('words')
         .whereIn('uuid', uuidsToDelete)
-        .where('game' satisfies keyof Word, gameUuid)
+        .where(ownerConstraint)
         .delete()
     }
   })
