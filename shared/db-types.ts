@@ -1,41 +1,61 @@
-export interface User {
-  name: string
-  password: string
-  created_at: string
-  updated_at: string
-}
-
 export interface Game {
-  identifier: string
+  uuid: string
   name: string
-  admin: string // references User.name
+  adminToken: string
+  groupTakingImages: number
   created_at: string
   updated_at: string
 }
 
 export interface Player {
-  name: string // references User.name
-  game: string // references Game.identifier
-  group: string
+  uuid: string
+  game: string
+  group: number
+  token: string
+  pairedWithPlayer: string
   created_at: string
   updated_at: string
 }
 
 export interface Word {
+  uuid: string
   word: string
-  game: string // references Game.identifier
-  chosen_for_player?: string // references Player.name
-  ordering: number
+  game: string
+  chosenForPlayer?: string
+  group: number
   created_at: string
   updated_at: string
 }
 
 export interface Image {
-  filename: string
-  game: string // references Game.identifier
-  word_actual?: string // references Word.word
-  word_guess?: string // references Word.word
-  deleted_at?: string
+  uuid: string
+  game: string
+  wordActual: string
+  wordGuess?: string
+  deletedAt?: string
   created_at: string
   updated_at: string
+}
+
+export interface AdminData {
+  game: Game
+  players: Player[]
+  words: Word[]
+  images: Image[]
+}
+
+type ImageToGuess = Omit<Image, 'wordActual'> & {
+  answerCorrect: null | boolean
+}
+
+export interface PlayerData {
+  game: Omit<Game, 'adminToken'>
+  player: Player
+  otherPlayers: Omit<Player, 'token'>[]
+  turn: 'taking_images' | 'guessing_words' | 'paused'
+
+  takenImages: Image[]
+  imagesToGuess: ImageToGuess[]
+  wordsToTakeImagesFor: Word[]
+  wordOptions: Omit<Word, 'chosenForPlayer'>[]
 }
