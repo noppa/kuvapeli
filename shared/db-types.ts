@@ -1,40 +1,50 @@
+export type Uuid = string & { __uuid: true }
+export type DateLike = Date | string
+
 export interface Game {
-  uuid: string
+  uuid: Uuid
   name: string
   adminToken: string
-  groupTakingImages: number
-  created_at: string
-  updated_at: string
+  groupTakingImages?: number
+  created_at: DateLike
+  updated_at: DateLike
 }
 
 export interface Player {
-  uuid: string
-  game: string
+  uuid: Uuid
+  name?: string
+  game: Uuid
   group: number
+  pairedWithPlayer: Uuid
   token: string
-  pairedWithPlayer: string
-  created_at: string
-  updated_at: string
+  created_at: DateLike
+  updated_at: DateLike
 }
 
 export interface Word {
-  uuid: string
-  word: string
-  game: string
-  chosenForPlayer?: string
+  uuid: Uuid
+  name: string
+  game: Uuid
+  chosenForPlayer?: Uuid
   group: number
-  created_at: string
-  updated_at: string
+  created_at: DateLike
+  updated_at: DateLike
 }
 
 export interface Image {
-  uuid: string
-  game: string
-  wordActual: string
-  wordGuess?: string
-  deletedAt?: string
-  created_at: string
-  updated_at: string
+  uuid: Uuid
+  takenByPlayer: Uuid
+  deletedAt: DateLike | null
+  created_at: DateLike
+  updated_at: DateLike
+}
+
+export interface Guess {
+  uuid: Uuid
+  word: Uuid
+  guessedByPlayer: Uuid
+  created_at: DateLike
+  updated_at: DateLike
 }
 
 export interface AdminData {
@@ -44,18 +54,37 @@ export interface AdminData {
   images: Image[]
 }
 
-type ImageToGuess = Omit<Image, 'wordActual'> & {
-  answerCorrect: null | boolean
+export interface GuessResult extends Guess {
+  wordName: string
+  correct: boolean
 }
+
+interface TakingImagesTurnData {
+  turn: 'taking_images'
+  wordsToTakeImagesFor: Word[]
+  takenImages: Image[]
+  mateGuessedWords: GuessResult[]
+}
+
+interface GuessingWordsTurnData {
+  turn: 'guessing_words'
+  imagesToGuess: Image[]
+  ownGuessedWords: GuessResult[]
+}
+
+interface PausedTurnData {
+  turn: 'paused'
+}
+
+export type TurnData =
+  | TakingImagesTurnData
+  | GuessingWordsTurnData
+  | PausedTurnData
 
 export interface PlayerData {
   game: Omit<Game, 'adminToken'>
   player: Player
   otherPlayers: Omit<Player, 'token'>[]
-  turn: 'taking_images' | 'guessing_words' | 'paused'
-
-  takenImages: Image[]
-  imagesToGuess: ImageToGuess[]
-  wordsToTakeImagesFor: Word[]
-  wordOptions: Omit<Word, 'chosenForPlayer'>[]
+  wordOptions: Omit<Word, 'chosenForPlayer' | 'group'>[]
+  turnData: TurnData
 }
