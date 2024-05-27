@@ -10,12 +10,15 @@ import {
 import { omit } from '../shared/utils'
 import db from './db'
 
-async function getImagesByPlayer(playerUuid: string): Promise<Image[]> {
-  return await db
+async function getImagesByPlayer(
+  playerUuid: string,
+): Promise<Omit<Image, 'metadata'>[]> {
+  const images: Image[] = await db
     .select('images.*')
     .from('images')
     .where('images.takenByPlayer' satisfies `images.${keyof Image}`, playerUuid)
     .whereNull('images.deletedAt' satisfies `images.${keyof Image}`)
+  return images.map((img) => omit(img, ['metadata']))
 }
 
 async function getGuessesByPlayer(playerUuid: string): Promise<Guess[]> {

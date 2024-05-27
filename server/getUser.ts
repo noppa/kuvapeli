@@ -7,7 +7,8 @@ export type UserResult =
   | { type: 'player'; game: string; value: Player }
 
 export default async function getUser(req: Request): Promise<UserResult> {
-  const authorization = req.headers.authorization
+  const authorization =
+    req.headers.authorization || String(req.query.token || '')
 
   if (!authorization) {
     throw new Error('No token provided')

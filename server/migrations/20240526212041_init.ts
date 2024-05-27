@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
   })
   await knex.schema.createTable('players', (table) => {
     table.string('uuid').primary()
-    table.string('name')
+    table.string('name').notNullable()
     table.string('game').references('uuid').inTable('games').notNullable()
     table.integer('group').notNullable()
     table
@@ -33,6 +33,7 @@ export async function up(knex: Knex): Promise<void> {
   })
   await knex.schema.createTable('images', (table) => {
     table.string('uuid').primary()
+    table.string('metadata')
     table.timestamp('deletedAt')
     table
       .string('takenByPlayer')
