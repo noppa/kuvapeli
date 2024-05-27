@@ -1,7 +1,6 @@
-export type Uuid = string & { __uuid: true }
-export type DateLike = Date | string
+import { DateLike, Uuid } from './utils'
 
-export interface Game {
+export type Game = {
   uuid: Uuid
   name: string
   adminToken: string
@@ -10,7 +9,7 @@ export interface Game {
   updated_at: DateLike
 }
 
-export interface Player {
+export type Player = {
   uuid: Uuid
   name?: string
   game: Uuid
@@ -21,7 +20,7 @@ export interface Player {
   updated_at: DateLike
 }
 
-export interface Word {
+export type Word = {
   uuid: Uuid
   name: string
   game: Uuid
@@ -31,7 +30,7 @@ export interface Word {
   updated_at: DateLike
 }
 
-export interface Image {
+export type Image = {
   uuid: Uuid
   takenByPlayer: Uuid
   deletedAt: DateLike | null
@@ -39,7 +38,7 @@ export interface Image {
   updated_at: DateLike
 }
 
-export interface Guess {
+export type Guess = {
   uuid: Uuid
   word: Uuid
   guessedByPlayer: Uuid
@@ -47,14 +46,14 @@ export interface Guess {
   updated_at: DateLike
 }
 
-export interface AdminData {
+export type AdminData = {
   game: Game
   players: Player[]
   words: Word[]
-  images: Image[]
+  allPlayerData: PlayerData[]
 }
 
-export interface GuessResult extends Guess {
+export type GuessResult = Guess & {
   wordName: string
   correct: boolean
 }
@@ -76,12 +75,17 @@ interface PausedTurnData {
   turn: 'paused'
 }
 
+export type CrudOperation<T extends { uuid: string }> =
+  | { op: 'C'; data: T }
+  | { op: 'U'; data: T }
+  | { op: 'D'; uuid: Uuid }
+
 export type TurnData =
   | TakingImagesTurnData
   | GuessingWordsTurnData
   | PausedTurnData
 
-export interface PlayerData {
+export type PlayerData = {
   game: Omit<Game, 'adminToken'>
   player: Player
   otherPlayers: Omit<Player, 'token'>[]

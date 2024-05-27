@@ -1,17 +1,19 @@
-import { AdminData, Game } from '../shared/db-types'
+import { AdminData, Game, Player, Word } from '../shared/db-types'
 import db from './db'
+import getPlayerData from './getPlayerData'
 
 export default async function getAdminData(game: Game): Promise<AdminData> {
-  const [players, words, images] = await Promise.all([
-    db.from('players').where('game', game.uuid),
-    db.from('words').where('game', game.uuid),
-    db.from('images').where('game', game.uuid),
+  const [players, words] = await Promise.all([
+    db.from('players').where('game' satisfies keyof Player, game.uuid),
+    db.from('words').where('game' satisfies keyof Word, game.uuid),
   ])
+
+  const allPlayerData = await Promise.all(players.map((p) => getPlayerData(p)))
 
   return {
     game,
     players,
     words,
-    images,
+    allPlayerData,
   }
 }

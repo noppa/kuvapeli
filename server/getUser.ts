@@ -2,7 +2,7 @@ import db from './db'
 import type { Game, Player } from '../shared/db-types'
 import type { Request } from 'express'
 
-type UserResult =
+export type UserResult =
   | { type: 'admin'; game: string; value: Game }
   | { type: 'player'; game: string; value: Player }
 
