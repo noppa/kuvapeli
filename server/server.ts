@@ -13,6 +13,7 @@ import type {
 } from '../shared/dbTypes'
 import getPlayerData from './getPlayerData'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import getGameAsAdmin from './getGameAsAdmin'
 import handleCrudOperations from './handleCrudOperations'
 import * as path from 'path'
@@ -37,7 +38,32 @@ const fileUploadDir =
 
 const router = express.Router()
 
-router.get('/data', async (req, res) => {
+router.post('/login', async function login(req, res) {
+  try {
+    const user = await getUser(req)
+    const cookieExpires = new Date()
+    // Valid for 30 days
+    cookieExpires.setDate(cookieExpires.getDate() + 30)
+    const token =
+      user.type === 'admin' ? user.value.adminToken : user.value.token
+
+    res.header(
+      'Set-Cookie',
+      [
+        `authorization=${token}`,
+        `Path=/`,
+        `HttpOnly`,
+        `Secure`,
+        `SameSite=none`,
+        `Expires=${cookieExpires.toUTCString()}`,
+      ].join('; '),
+    )
+  } catch (err) {
+    handleError(err, res)
+  }
+})
+
+router.get('/data', async function getData(req, res) {
   try {
     const user = await getUser(req)
 
@@ -209,7 +235,7 @@ router.post('/admin/players', async (req, res) => {
   }
 })
 
-app.use('/api', bodyParser.json(), router)
+app.use('/api', cookieParser(), bodyParser.json(), router)
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`)
