@@ -1,4 +1,4 @@
-import { AdminData, Game, Player, Word } from '../shared/db-types'
+import { AdminData, Game, Player, Word } from '../shared/dbTypes'
 import db from './db'
 import getPlayerData from './getPlayerData'
 

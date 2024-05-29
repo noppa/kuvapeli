@@ -6,7 +6,7 @@ import {
   Word,
   Guess,
   TurnData,
-} from '../shared/db-types'
+} from '../shared/dbTypes'
 import { omit } from '../shared/utils'
 import db from './db'
 

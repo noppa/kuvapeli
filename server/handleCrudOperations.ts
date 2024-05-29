@@ -1,4 +1,4 @@
-import { CrudOperation } from '../shared/db-types'
+import { CrudOperation } from '../shared/dbTypes'
 import db from './db'
 import { DateLike, Uuid } from '../shared/utils'
 

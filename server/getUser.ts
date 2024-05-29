@@ -1,5 +1,5 @@
 import db from './db'
-import type { Game, Player } from '../shared/db-types'
+import type { Game, Player } from '../shared/dbTypes'
 import type { Request } from 'express'
 
 export type UserResult =
