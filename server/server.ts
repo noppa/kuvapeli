@@ -28,6 +28,7 @@ import {
   ERROR_CODE_FORBIDDEN,
   ERROR_CODE_UNPROCESSABLE_ENTITY,
 } from './errorCodes'
+import cors from 'cors'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -36,11 +37,31 @@ const fileUploadDir =
 // const webDistDir =
 //   process.env.WEB_DIST_DIR || path.join(__dirname, '..', 'dist')
 
+app.use(
+  cors({
+    origin: [/^http:\/\/localhost:[0-9]+/, /^[a-zA-Z0-9]+\.arpakuut.\.io/],
+  }),
+)
+
+app.use(function logRequest(req, res, next) {
+  console.log({
+    url: req.url,
+    method: req.method,
+    query: req.query,
+    headers: req.headers,
+    body: req.body && String(req.body).slice(0, 1000),
+  })
+  next()
+})
+
 const router = express.Router()
 
-router.post('/login', async function login(req, res) {
+router.use(cookieParser()).use(bodyParser.json())
+
+router.get('/data', async function getData(req, res) {
   try {
     const user = await getUser(req)
+
     const cookieExpires = new Date()
     // Valid for 30 days
     cookieExpires.setDate(cookieExpires.getDate() + 30)
@@ -58,14 +79,6 @@ router.post('/login', async function login(req, res) {
         `Expires=${cookieExpires.toUTCString()}`,
       ].join('; '),
     )
-  } catch (err) {
-    handleError(err, res)
-  }
-})
-
-router.get('/data', async function getData(req, res) {
-  try {
-    const user = await getUser(req)
 
     if (user.type === 'admin') {
       const adminData = await getAdminData(user.value)
@@ -114,7 +127,7 @@ router.post('/guess', async function postGuess(req, res) {
       guessedByPlayer: player.uuid,
     })
 
-    res.sendStatus(201)
+    res.status(201).send({})
   } catch (err) {
     handleError(err, res)
   }
@@ -182,7 +195,7 @@ router.post(
         )
       }
 
-      res.sendStatus(201)
+      res.status(201).send({})
     } catch (err) {
       console.error(err)
       res.status(500).send(String(err))
@@ -204,7 +217,7 @@ router.put('/admin/games', async (req, res) => {
       {},
       crudOperations.filter((change) => change.op === 'C'),
     )
-    res.sendStatus(201)
+    res.status(201).send({})
   } catch (err) {
     console.error(err)
     res.status(500).send(String(err))
@@ -216,7 +229,7 @@ router.post('/admin/words', async (req, res) => {
     const game = await getGameAsAdmin(req)
     const crudOperations: CrudOperation<Word>[] = req.body.operations
     await handleCrudOperations('words', { game: game.uuid }, crudOperations)
-    res.sendStatus(201)
+    res.status(201).send({})
   } catch (err) {
     console.error(err)
     res.status(500).send(String(err))
@@ -228,14 +241,14 @@ router.post('/admin/players', async (req, res) => {
     const game = await getGameAsAdmin(req)
     const crudOperations: CrudOperation<Player>[] = req.body.operations
     await handleCrudOperations('players', { game: game.uuid }, crudOperations)
-    res.sendStatus(201)
+    res.status(201).send({})
   } catch (err) {
     console.error(err)
     res.status(500).send(String(err))
   }
 })
 
-app.use('/api', cookieParser(), bodyParser.json(), router)
+app.use('/api', router)
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`)

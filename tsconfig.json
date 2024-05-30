@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Bundler",
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "esModuleInterop": true

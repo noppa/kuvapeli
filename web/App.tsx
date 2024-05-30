@@ -1,20 +1,26 @@
 import * as Solid from 'solid-js'
-import getToken from './getToken'
+import getDataResource from './resources/getDataResource'
 
 const App: Solid.Component<{ children?: Solid.JSX.Element }> = (props) => {
-  const token = getToken()
-  if (!token) {
-    return <div>Tarvitset kutsun pelataksesi.</div>
-  }
+  const { data } = getDataResource()
 
   return (
-    <div>
-      <header>
-        <h1>📷🕵️ Salatut kuvat -kisa</h1>
-      </header>
-      <main>{props.children}</main>
-      <footer></footer>
-    </div>
+    <Solid.Switch>
+      <Solid.Match when={data.error}>{String(data.error)}</Solid.Match>
+      <Solid.Match when={data.loading}>Ladataan...</Solid.Match>
+      <Solid.Match when={!data.loading}>
+        <div>
+          <header>
+            <h1>📷🕵️ Vakoojien lomakuvapeli</h1>
+          </header>
+          <main>
+            <div>{JSON.stringify(data, null, 2)}</div>
+            {props.children}
+          </main>
+          <footer></footer>
+        </div>
+      </Solid.Match>
+    </Solid.Switch>
   )
 }
 

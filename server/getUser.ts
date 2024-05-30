@@ -18,7 +18,7 @@ export default async function getUser(req: Request): Promise<UserResult> {
   if (!authorization) {
     throw new Error('No token provided')
   }
-  const tokenMatch = authorization.match(/^Bearer ([a-z0-9]+)$/i)
+  const tokenMatch = authorization.match(/^(?:Bearer )?([a-z0-9]+)$/i)
   if (!tokenMatch) {
     throw new Error('Invalid token format')
   }
