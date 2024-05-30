@@ -1,8 +1,5 @@
-import * as Solid from "solid-js";
+import * as Solid from 'solid-js'
 
-const Home: Solid.Component = () => {
-  console.log("Home");
-  return <div>Home sweet thome</div>;
-};
+const Home: Solid.Component = () => {}
 
-export default Home;
+export default Home

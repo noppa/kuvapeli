@@ -37,13 +37,15 @@ const fileUploadDir =
 // const webDistDir =
 //   process.env.WEB_DIST_DIR || path.join(__dirname, '..', 'dist')
 
-app.use(
+app.use(cookieParser()).use(bodyParser.json())
+
+.use(
   cors({
     origin: [/^http:\/\/localhost:[0-9]+/, /^[a-zA-Z0-9]+\.arpakuut.\.io/],
   }),
 )
 
-app.use(function logRequest(req, res, next) {
+.use(function logRequest(req, res, next) {
   console.log({
     url: req.url,
     method: req.method,
@@ -56,7 +58,6 @@ app.use(function logRequest(req, res, next) {
 
 const router = express.Router()
 
-router.use(cookieParser()).use(bodyParser.json())
 
 router.get('/data', async function getData(req, res) {
   try {
@@ -206,7 +207,8 @@ router.post(
 router.put('/admin/games', async (req, res) => {
   try {
     const game = await getGameAsAdmin(req)
-    const crudOperations: CrudOperation<Game>[] = req.body.operations
+    const crudOperations: CrudOperation<Game>[] = req.body
+    console.log('crudOperations', req.body)
     await handleCrudOperations(
       'games',
       { uuid: game.uuid },
@@ -227,7 +229,7 @@ router.put('/admin/games', async (req, res) => {
 router.post('/admin/words', async (req, res) => {
   try {
     const game = await getGameAsAdmin(req)
-    const crudOperations: CrudOperation<Word>[] = req.body.operations
+    const crudOperations: CrudOperation<Word>[] = req.body
     await handleCrudOperations('words', { game: game.uuid }, crudOperations)
     res.status(201).send({})
   } catch (err) {
@@ -239,7 +241,7 @@ router.post('/admin/words', async (req, res) => {
 router.post('/admin/players', async (req, res) => {
   try {
     const game = await getGameAsAdmin(req)
-    const crudOperations: CrudOperation<Player>[] = req.body.operations
+    const crudOperations: CrudOperation<Player>[] = req.body
     await handleCrudOperations('players', { game: game.uuid }, crudOperations)
     res.status(201).send({})
   } catch (err) {

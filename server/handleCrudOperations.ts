@@ -36,16 +36,16 @@ export default async function handleCrudOperations<
 
   await db.transaction(async (trx) => {
     if (inserts.length) {
-      await trx('words').insert(inserts)
+      await trx(tableName).insert(inserts)
     }
     for (const update of updates) {
-      await trx('words')
+      await trx(tableName)
         .where('uuid', update.uuid)
         .where(ownerConstraint)
         .update(update)
     }
     if (uuidsToDelete.length) {
-      await trx('words')
+      await trx(tableName)
         .whereIn('uuid', uuidsToDelete)
         .where(ownerConstraint)
         .delete()

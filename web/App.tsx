@@ -1,5 +1,9 @@
 import * as Solid from 'solid-js'
-import getDataResource from './resources/getDataResource'
+import getDataResource, {
+  AdminDataContext,
+  PlayerDataContext,
+} from './resources/getDataResource'
+import { AdminData, PlayerData } from '../shared/dbTypes'
 
 const App: Solid.Component<{ children?: Solid.JSX.Element }> = (props) => {
   const { data } = getDataResource()
@@ -14,8 +18,15 @@ const App: Solid.Component<{ children?: Solid.JSX.Element }> = (props) => {
             <h1>📷🕵️ Vakoojien lomakuvapeli</h1>
           </header>
           <main>
-            <div>{JSON.stringify(data, null, 2)}</div>
-            {props.children}
+            {data().type === 'admin' ? (
+              <AdminDataContext.Provider value={data().data as AdminData}>
+                {props.children}
+              </AdminDataContext.Provider>
+            ) : (
+              <PlayerDataContext.Provider value={data().data as PlayerData}>
+                {props.children}
+              </PlayerDataContext.Provider>
+            )}
           </main>
           <footer></footer>
         </div>

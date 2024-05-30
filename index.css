@@ -3,3 +3,7 @@ h1 {
   font-family: Calibri, Verdana, sans-serif;
   color: #232323;
 }
+
+.danger {
+  color: red;
+}

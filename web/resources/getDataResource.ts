@@ -1,4 +1,4 @@
-import { createResource } from 'solid-js'
+import { createContext, createResource } from 'solid-js'
 import makeApiRequest from './makeApiRequest'
 import getToken from '../getToken'
 import { AdminData, PlayerData } from '../../shared/dbTypes'
@@ -42,3 +42,6 @@ export default function getDataResource() {
   if (initialized) return initialized
   return (initialized = initDataResource())
 }
+
+export const PlayerDataContext = createContext<PlayerData>(null)
+export const AdminDataContext = createContext<AdminData>(null)
