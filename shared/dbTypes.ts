@@ -26,8 +26,8 @@ export type Word = {
   game: Uuid
   chosenForPlayer?: Uuid
   group: number
-  created_at: DateLike
-  updated_at: DateLike
+  created_at?: DateLike
+  updated_at?: DateLike
 }
 
 export type Image = {
@@ -59,20 +59,20 @@ export type GuessResult = Guess & {
   correct: boolean
 }
 
-interface TakingImagesTurnData {
+export interface TakingImagesTurnData {
   turn: 'taking_images'
   wordsToTakeImagesFor: Word[]
   takenImages: Omit<Image, 'metadata'>[]
   mateGuessedWords: GuessResult[]
 }
 
-interface GuessingWordsTurnData {
+export interface GuessingWordsTurnData {
   turn: 'guessing_words'
   imagesToGuess: Omit<Image, 'metadata'>[]
   ownGuessedWords: GuessResult[]
 }
 
-interface PausedTurnData {
+export interface PausedTurnData {
   turn: 'paused'
 }
 

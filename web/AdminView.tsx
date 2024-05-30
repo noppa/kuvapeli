@@ -1,6 +1,6 @@
 import { createSignal, useContext } from 'solid-js'
 import { AdminDataContext } from './resources/getDataResource'
-import { AdminData, CrudOperation, Game, Player } from '../shared/dbTypes'
+import { AdminData, CrudOperation, Game, Player, Word } from '../shared/dbTypes'
 import makeApiRequest from './resources/makeApiRequest'
 import { Uuid } from '../shared/utils'
 
@@ -8,7 +8,7 @@ export default function AdminView() {
   const data = useContext(AdminDataContext)
   const [error, setError] = createSignal('')
   const [savedTimestamp, setSavedTimestamp] = createSignal('')
-  const playersToSave = new Set()
+  const uuidsToSave = new Set()
 
   let formRef!: HTMLFormElement
 
@@ -18,10 +18,16 @@ export default function AdminView() {
       const form = event.target as HTMLFormElement
       const pre = form.querySelector('pre') as HTMLPreElement
       const newData = JSON.parse(pre.textContent || '{}') as AdminData
-      console.log('woop', newData)
       const playerPayload = newData.players.map((p): CrudOperation<Player> => {
-        if (playersToSave.has(p.uuid)) {
-          playersToSave.delete(p.uuid)
+        if (uuidsToSave.has(p.uuid)) {
+          uuidsToSave.delete(p.uuid)
+          return { op: 'C', data: p }
+        }
+        return { op: 'U', data: p }
+      })
+      const wordPayload = newData.words.map((p): CrudOperation<Word> => {
+        if (uuidsToSave.has(p.uuid)) {
+          uuidsToSave.delete(p.uuid)
           return { op: 'C', data: p }
         }
         return { op: 'U', data: p }
@@ -38,8 +44,12 @@ export default function AdminView() {
           method: 'POST',
           body: JSON.stringify(playerPayload),
         }),
+        makeApiRequest('admin/words', {
+          method: 'POST',
+          body: JSON.stringify(wordPayload),
+        }),
       ])
-      playersToSave.clear()
+      uuidsToSave.clear()
       setError('')
       setSavedTimestamp(new Date().toISOString())
     } catch (err) {
@@ -65,7 +75,7 @@ export default function AdminView() {
       pairedWithPlayer = friend.uuid
     }
 
-    playersToSave.add(uuid)
+    uuidsToSave.add(uuid)
     data.players.push({
       uuid,
       game: data.game.uuid,
@@ -75,6 +85,25 @@ export default function AdminView() {
       pairedWithPlayer: pairedWithPlayer as Uuid,
     })
 
+    pre.innerText = JSON.stringify(data, null, 2)
+  }
+
+  const addWord = (event: any) => {
+    event.preventDefault()
+    const form = formRef
+    const pre = form.querySelector('pre') as HTMLPreElement
+    const data = JSON.parse(pre.textContent || '{}') as AdminData
+    const input = form.querySelector('"new-word') as HTMLInputElement
+    const groupAWords = data.words.filter((p: any) => p.group === 1)
+    const group = groupAWords.length <= data.words.length / 2 ? 1 : 2
+
+    data.words.push({
+      uuid: crypto.randomUUID() as Uuid,
+      game: data.game.uuid,
+      name: input.value,
+      group,
+    })
+    input.value = ''
     pre.innerText = JSON.stringify(data, null, 2)
   }
 
@@ -88,6 +117,12 @@ export default function AdminView() {
           <div>
             <button type="button" onClick={addPlayer}>
               Lisää pelaaja
+            </button>
+          </div>
+          <div>
+            <input type="text" id="new-word" />
+            <button type="button" onClick={addWord}>
+              Lisää sana
             </button>
           </div>
           <pre contentEditable={true}>{JSON.stringify(data, null, 2)}</pre>
