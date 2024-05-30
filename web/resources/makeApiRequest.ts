@@ -1,4 +1,4 @@
-import getToken from "../getToken"
+import getToken from '../getToken'
 
 export default async function makeApiRequest(
   api: string,
@@ -10,9 +10,9 @@ export default async function makeApiRequest(
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: getToken(),
-      ...options.headers,
-    }
+      Authorization: `Bearer ${getToken()}`,
+      ...options?.headers,
+    },
   })
   if (!response.ok) {
     const text = await response.text()

@@ -5,7 +5,7 @@ import { DateLike, Uuid } from '../shared/utils'
 export default async function handleCrudOperations<
   T extends {
     uuid: Uuid
-    updated_at: DateLike
+    updated_at?: DateLike
   },
 >(
   tableName: string,

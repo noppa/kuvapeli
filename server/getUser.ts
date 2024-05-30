@@ -24,9 +24,10 @@ export default async function getUser(req: Request): Promise<UserResult> {
   }
   const [, token] = tokenMatch
 
+  console.log('parsed token', token)
   const player: undefined | Player = await db
     .from('players')
-    .where('token', authorization)
+    .where('token', token)
     .first()
   if (player) {
     return { type: 'player', game: player.game, value: player }

@@ -1,6 +1,5 @@
 import { createContext, createResource } from 'solid-js'
 import makeApiRequest from './makeApiRequest'
-import getToken from '../getToken'
 import { AdminData, PlayerData } from '../../shared/dbTypes'
 
 export type DataFetchingResult =
@@ -10,11 +9,7 @@ export type DataFetchingResult =
 function initDataResource() {
   let fetchedData: DataFetchingResult | undefined
   async function fetchData(): Promise<DataFetchingResult> {
-    const result = await makeApiRequest('data', {
-      headers: {
-        authorization: `Bearer ${getToken()}`,
-      },
-    })
+    const result = await makeApiRequest('data')
     return result
   }
   const [data, { refetch }] = createResource(async () => {
@@ -43,5 +38,9 @@ export default function getDataResource() {
   return (initialized = initDataResource())
 }
 
-export const PlayerDataContext = createContext<PlayerData>(null)
-export const AdminDataContext = createContext<AdminData>(null)
+export const PlayerDataContext = createContext<PlayerData>(
+  null as any as PlayerData,
+)
+export const AdminDataContext = createContext<AdminData>(
+  null as any as AdminData,
+)

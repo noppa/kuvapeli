@@ -16,8 +16,8 @@ export type Player = {
   group: number
   pairedWithPlayer: Uuid
   token: string
-  created_at: DateLike
-  updated_at: DateLike
+  created_at?: DateLike
+  updated_at?: DateLike
 }
 
 export type Word = {
