@@ -23,7 +23,9 @@ const App: Solid.Component<{ children?: Solid.JSX.Element }> = (props) => {
   return (
     <Solid.Switch>
       <Solid.Match when={data.error}>{String(data.error)}</Solid.Match>
-      <Solid.Match when={data.loading}>Ladataan...</Solid.Match>
+      <Solid.Match when={data.loading}>
+        <div aria-busy="true">Ladataan...</div>
+      </Solid.Match>
       <Solid.Match when={!data.loading}>
         <div>
           <header>

@@ -4,6 +4,7 @@ import { TakingImagesTurnData } from '../shared/dbTypes'
 import getApiUrl from './resources/getApiUrl'
 import makeApiRequest from './resources/makeApiRequest'
 import getToken from './getToken'
+import Word from './Word'
 
 type UploadState =
   | { type: 'error'; value: string }
@@ -87,11 +88,11 @@ export default function TakingImagesTurnView() {
 
       <section>
         <h4>Sanat</h4>
-        <ul>
+        <div class="grid word-grid">
           {turnData.wordsToTakeImagesFor.map((word) => {
-            return <li>{word.name}</li>
+            return <Word word={word} guessResults={turnData.mateGuessedWords} />
           })}
-        </ul>
+        </div>
       </section>
       <section>
         <details>
@@ -158,20 +159,18 @@ export default function TakingImagesTurnView() {
       </section>
       <section>
         <h4>Kuvasi</h4>
-        <div>
+        <div class="grid">
           {turnData.takenImages.map((image) => {
             const imageUrl = getApiUrl('images/' + image.uuid)
             const authQueryParam = '?authorization=' + authToken
             return (
-              <div>
-                <picture>
-                  <source
-                    srcset={imageUrl + '_optimized.webp' + authQueryParam}
-                    type="image/webp"
-                  />
-                  <img src={imageUrl + authQueryParam} />
-                </picture>
-              </div>
+              <picture class="image-list-image">
+                <source
+                  srcset={imageUrl + '_optimized.webp' + authQueryParam}
+                  type="image/webp"
+                />
+                <img src={imageUrl + authQueryParam} />
+              </picture>
             )
           })}
         </div>
