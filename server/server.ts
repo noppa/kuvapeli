@@ -258,6 +258,10 @@ router.post('/admin/players', async (req, res) => {
 
 app.use('/api', router)
 
+app.get('*', function getApp(req, res) {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'))
+})
+
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`)
 })
