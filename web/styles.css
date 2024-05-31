@@ -27,14 +27,14 @@ header, main, footer {
 	height: 400px;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: end;
 	flex-direction: column;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
-	filter: grayscale(100%) opacity(80%);
 	color: white;
 	text-align: center;
+	padding: 20px;
 }
 
 .word-name {
@@ -49,6 +49,10 @@ header, main, footer {
 	background: rgba(0, 0, 0, 0.7);
 }
 
+.image-grid {
+	grid-template-columns: repeat(auto-fit, minmax(500px, 1000px));
+}
+
 .word-grid {
-	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(300px, 400px));
 }

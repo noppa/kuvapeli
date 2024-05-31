@@ -1,10 +1,9 @@
 import { JSX, Match, Show, createSignal, useContext } from 'solid-js'
 import getDataResource, { PlayerDataContext } from './resources/getDataResource'
 import { TakingImagesTurnData } from '../shared/dbTypes'
-import getApiUrl from './resources/getApiUrl'
 import makeApiRequest from './resources/makeApiRequest'
-import getToken from './getToken'
 import Word from './Word'
+import ImageGrid from './ImageGrid'
 
 type UploadState =
   | { type: 'error'; value: string }
@@ -80,8 +79,6 @@ export default function TakingImagesTurnView() {
     setImagePreviewUrl(URL.createObjectURL(files[0]))
   }
 
-  const authToken = getToken()
-
   return (
     <div>
       <h3>📷 On vuorosi ottaa kuvia</h3>
@@ -110,6 +107,7 @@ export default function TakingImagesTurnView() {
           fallback={<div>Olet ottanut jo tarpeeksi kuvia</div>}
         >
           <form
+            style={{ 'max-width': '400px' }}
             method="post"
             enctype="multipart/form-data"
             onSubmit={uploadImage}
@@ -159,21 +157,7 @@ export default function TakingImagesTurnView() {
       </section>
       <section>
         <h4>Kuvasi</h4>
-        <div class="grid">
-          {turnData.takenImages.map((image) => {
-            const imageUrl = getApiUrl('images/' + image.uuid)
-            const authQueryParam = '?authorization=' + authToken
-            return (
-              <picture class="image-list-image">
-                <source
-                  srcset={imageUrl + '_optimized.webp' + authQueryParam}
-                  type="image/webp"
-                />
-                <img src={imageUrl + authQueryParam} />
-              </picture>
-            )
-          })}
-        </div>
+        <ImageGrid images={turnData.takenImages} />
       </section>
     </div>
   )

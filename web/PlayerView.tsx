@@ -1,30 +1,28 @@
-import { createResource, useContext } from 'solid-js'
+import { useContext } from 'solid-js'
 import { PlayerDataContext } from './resources/getDataResource'
-import { useNavigate } from '@solidjs/router'
+import PausedTurnView from './PausedTurnView'
+import GuessingWordsTurnView from './GuessingWordsTurnView'
+import TakingImagesTurnView from './TakingImagesTurnView'
 
 export default function PlayerView() {
   const data = useContext(PlayerDataContext)
-  const navigate = useNavigate()
-  createResource(() => {
+  const getView = () => {
     const turn = data.turnData.turn
     switch (turn) {
       case 'paused': {
-        navigate('/paused')
-        break
+        return <PausedTurnView />
       }
       case 'guessing_words': {
-        navigate('/guessing_words')
-        break
+        return <GuessingWordsTurnView />
       }
       case 'taking_images': {
-        navigate('/taking_images')
-        break
+        return <TakingImagesTurnView />
       }
       default: {
         console.error(`Unknown turn ${turn satisfies never}`)
       }
     }
-  })
+  }
 
-  return <div></div>
+  return <div>{getView()}</div>
 }

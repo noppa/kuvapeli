@@ -1,8 +1,10 @@
+import { JSX } from 'solid-js'
 import type { GuessResult, Word as WordType } from '../shared/dbTypes'
 
 type Props = {
-  word: WordType
+  word: Omit<WordType, 'chosenForPlayer' | 'group'>
   guessResults: GuessResult[]
+  label?: JSX.Element
 }
 
 const images = {
@@ -41,7 +43,6 @@ export default function Word(props: Props) {
     // Select pseudorandom image
     const seed = word.uuid.charCodeAt(0) + word.uuid.charCodeAt(1)
     const index = seed % imageSet.length
-    console.log('getting image', word, imageSet, index)
     return imageSet[index].toString()
   }
 
@@ -56,9 +57,9 @@ export default function Word(props: Props) {
   const getFilter = () => {
     const correct = isCorrect()
     if (correct === null) {
-      return 'grayscale(100%) opacity(80%)'
+      return 'grayscale(70%) opacity(90%)'
     }
-    return correct ? 'opacity(90%)' : 'sepia(80%) opacity(80%)'
+    return correct ? 'opacity(90%)' : 'sepia(80%) opacity(90%)'
   }
 
   return (
@@ -70,7 +71,7 @@ export default function Word(props: Props) {
       }}
     >
       <strong class="word-name">{word.name}</strong>
-      <i class="word-result">{getStateLabel()}</i>
+      {props.label ?? <i class="word-result">{getStateLabel()}</i>}
     </div>
   )
 }
