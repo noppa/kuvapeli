@@ -1,18 +1,21 @@
 import getToken from '../getToken'
+import getApiUrl from './getApiUrl'
 
 export default async function makeApiRequest(
   api: string,
   options?: RequestInit,
 ) {
-  // @ts-ignore
-  const url = `${import.meta.env.VITE_API_URL}/api/${api}`
+  const url = getApiUrl(api)
+  let headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${getToken()}`,
+    ...options?.headers,
+  }
+  headers = JSON.parse(JSON.stringify(headers))
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`,
-      ...options?.headers,
-    },
+    headers,
   })
   if (!response.ok) {
     const text = await response.text()

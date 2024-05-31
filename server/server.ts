@@ -164,6 +164,7 @@ router.post(
   upload.single('image'),
   async function uploadImage(req, res) {
     try {
+      console.log(req)
       const player = await getPlayer(req)
       const userData = await getPlayerData(player)
       const { turnData } = userData
@@ -188,7 +189,7 @@ router.post(
       // Optimize image
       try {
         exec(
-          `convert ${JSON.stringify(req.file!.path)} -quality 85 -resize 1000x\\> ${JSON.stringify(req.file!.path + '_optimized_.webp')}`,
+          `convert ${JSON.stringify(req.file!.path)} -quality 85 -resize 1000x\\> ${JSON.stringify(req.file!.path + '_optimized.webp')}`,
         )
       } catch (err) {
         console.error(err)

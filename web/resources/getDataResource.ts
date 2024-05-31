@@ -28,7 +28,7 @@ function initDataResource() {
       console.log('Data not updated')
     }
   }
-  return { data, fetch: wrappedRefetch }
+  return { data, refetch: wrappedRefetch }
 }
 
 let initialized: undefined | ReturnType<typeof initDataResource>

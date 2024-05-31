@@ -93,16 +93,19 @@ export default function AdminView() {
     const form = formRef
     const pre = form.querySelector('pre') as HTMLPreElement
     const data = JSON.parse(pre.textContent || '{}') as AdminData
-    const input = form.querySelector('"new-word') as HTMLInputElement
+    const input = form.querySelector('#new-word') as HTMLInputElement
     const groupAWords = data.words.filter((p: any) => p.group === 1)
     const group = groupAWords.length <= data.words.length / 2 ? 1 : 2
+    const uuid = crypto.randomUUID() as Uuid
 
     data.words.push({
-      uuid: crypto.randomUUID() as Uuid,
+      uuid,
       game: data.game.uuid,
       name: input.value,
+      chosenForPlayer: null,
       group,
     })
+    uuidsToSave.add(uuid)
     input.value = ''
     pre.innerText = JSON.stringify(data, null, 2)
   }

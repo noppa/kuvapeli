@@ -1,7 +1,7 @@
 import knex from 'knex'
 
 const db = knex({
-  ...require('../knexfile'),
+  ...require('./knexfile'),
 })
 
 export default db

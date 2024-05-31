@@ -5,8 +5,8 @@ export type Game = {
   name: string
   adminToken: string
   groupTakingImages?: number
-  created_at: DateLike
-  updated_at: DateLike
+  created_at?: DateLike
+  updated_at?: DateLike
 }
 
 export type Player = {
@@ -24,7 +24,7 @@ export type Word = {
   uuid: Uuid
   name: string
   game: Uuid
-  chosenForPlayer?: Uuid
+  chosenForPlayer?: null | Uuid
   group: number
   created_at?: DateLike
   updated_at?: DateLike

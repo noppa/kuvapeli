@@ -18,6 +18,7 @@ async function getImagesByPlayer(
     .from('images')
     .where('images.takenByPlayer' satisfies `images.${keyof Image}`, playerUuid)
     .whereNull('images.deletedAt' satisfies `images.${keyof Image}`)
+    .orderBy('images.created_at')
   return images.map((img) => omit(img, ['metadata']))
 }
 
@@ -25,6 +26,7 @@ async function getGuessesByPlayer(playerUuid: string): Promise<Guess[]> {
   return await db
     .from('guesses')
     .where('guessedByPlayer' satisfies keyof Guess, playerUuid)
+    .orderBy('created_at')
 }
 
 export default async function getPlayerData(
@@ -49,12 +51,14 @@ export default async function getPlayerData(
     db
       .from('players')
       .where('game' satisfies keyof Player, player.game)
-      .whereNot('uuid', player.uuid),
+      .whereNot('uuid', player.uuid)
+      .orderBy('created_at'),
     getImagesByPlayer(player.uuid),
     getImagesByPlayer(player.pairedWithPlayer),
-    db.from('words').where('game' satisfies keyof Word, player.game) as Promise<
-      (Word & { chosenForGroup: number })[]
-    >,
+    db
+      .from('words')
+      .where('game' satisfies keyof Word, player.game)
+      .orderBy('created_at') as Promise<(Word & { chosenForGroup: number })[]>,
     getGuessesByPlayer(player.uuid),
     getGuessesByPlayer(player.pairedWithPlayer),
   ])
