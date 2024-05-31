@@ -6,5 +6,5 @@ RUN npm install
 ENV NODE_ENV=production
 RUN npm run build
 RUN rm -rf node_modules web
-RUN npm install --production
+RUN npm install --omit=dev
 CMD [ "npm run server" ]

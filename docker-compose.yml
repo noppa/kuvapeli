@@ -1,0 +1,12 @@
+services:
+  kuvapeli:
+    build: .
+    command: npm run server
+    volumes:
+      - ./server/uploads:/uploads:z
+      - ./server/db.sqlite:/db.sqlite:z
+    environment:
+      - FILE_UPLOAD_DIR=/uploads
+      - DB_FILE=/db.sqlite
+    ports:
+      - 3000:3000

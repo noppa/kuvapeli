@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "vite build",
-    "preserver": "rm -rf dist && npm run build && gzip -k dist/**/*{.js,.css} && knex migrate:up --cwd server",
+    "preserver": "knex migrate:up --cwd server",
     "server": "tsx server/server.ts",
     "server:watch": "tsx watch server/server.ts"
   },
