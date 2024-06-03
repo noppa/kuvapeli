@@ -58,7 +58,7 @@ export default async function getPlayerData(
     db
       .from('words')
       .where('game' satisfies keyof Word, player.game)
-      .orderBy('created_at') as Promise<(Word & { chosenForGroup: number })[]>,
+      .orderBy('created_at') as Promise<Word[]>,
     getGuessesByPlayer(player.uuid),
     getGuessesByPlayer(player.pairedWithPlayer),
   ])
@@ -108,10 +108,6 @@ export default async function getPlayerData(
     otherPlayers: otherPlayers.map((p) => omit(p, ['token'])),
     turnData,
 
-    wordOptions: words
-      .filter(
-        (w) => w.chosenForGroup == null || w.chosenForGroup === player.group,
-      )
-      .map((w) => omit(w, ['chosenForPlayer', 'group'])),
+    wordOptions: words.map((w) => omit(w, ['chosenForPlayer', 'group'])),
   }
 }
