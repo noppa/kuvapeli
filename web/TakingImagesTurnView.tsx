@@ -86,9 +86,21 @@ export default function TakingImagesTurnView() {
       <section>
         <h4>Sanat</h4>
         <div class="grid word-grid">
-          {turnData.wordsToTakeImagesFor.map((word) => {
+          {turnData.mateGuessedWords.map((guess) => {
+            const word = data.wordOptions.find((w) => w.uuid === guess.word)!
             return <Word word={word} guessResults={turnData.mateGuessedWords} />
           })}
+          {turnData.wordsToTakeImagesFor
+            .filter((word) => {
+              return !turnData.mateGuessedWords.some(
+                (guess) => guess.word === word.uuid,
+              )
+            })
+            .map((word) => {
+              return (
+                <Word word={word} guessResults={turnData.mateGuessedWords} />
+              )
+            })}
         </div>
       </section>
       <section>
