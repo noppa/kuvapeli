@@ -258,7 +258,10 @@ router.post('/admin/players', async (req, res) => {
 
 app.use('/api', router)
 
+app.use(express.static(path.join(__dirname, '..', 'dist')))
+
 app.get('*', function getApp(req, res) {
+  res.header('Cache-Control', 'max-age=7200')
   res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'))
 })
 
