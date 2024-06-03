@@ -134,3 +134,7 @@ dist
 .env
 
 uploads/
+
+data.json
+sanasto.txt
+parseWords.ts
